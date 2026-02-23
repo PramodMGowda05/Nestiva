@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nestiva</title>
+</head>
+
+<body>
+    <h3>Create a New Listing</h3>
+    <form method="POST" action="/listings">
+        <input type="text" name="listing[title]" placeholder="Title"> <br> <br>
+        <textarea type="text" name="listing[description]" placeholder="Description"></textarea><br><br>
+        <input  name="listing[image]" placeholder="Image URL/Link"><br><br>
+        <input type="number" name="listing[price]" placeholder="Price"><br><br>
+        <input type="text" name="listing[location]" placeholder="Location"><br><br>
+        <input type="text" name="listing[country]" placeholder="Country"><br><br>
+        <button>Create Listing</button>
+    </form>
+</body>
+
+</html>

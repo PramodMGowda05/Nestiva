@@ -14,7 +14,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "/public")));
 
 const port = 8080;
 const MONGO_URL = "mongodb://127.0.0.1:27017/nestiva";
@@ -32,6 +32,16 @@ async function main() {
 app.get("/", (req, res) => {
     res.send("Hi, I am root");
 });
+
+const validateListing = (req, res, next) => {
+    let { error } = listingSchema.validate(req.body);
+    if (error) {
+        let errMsg = error.details.map((el) => el.message).join(",")
+        throw new ExpressError(400, errMsg);
+    } else {
+        next();
+    }
+};
 
 //Index route
 app.get("/listings", async (req, res) => {
@@ -107,7 +117,7 @@ app.all("*splat", (req, res, next) => {
 
 app.use((err, req, res, next) => {
     let { statusCode = 500, message = "Something went wrong!" } = err;
-    res.status(statusCode).render("error.ejs");
+    res.status(statusCode).render("error.ejs", {message});
     //res.status(statusCode).send(message);
 });
 

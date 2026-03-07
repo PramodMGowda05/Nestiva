@@ -110,12 +110,12 @@ app.delete("/listings/:id", async (req, res) => {
 
 //Reviews
 //Post Review Route
-app.post("/listings/:id/reviews", validateReview, wrapAsync(async(req,res)=>{
+app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
-    let newReview= new Review(req.body.review);
+    let newReview = new Review(req.body.review);
 
     listing.reviews.push(newReview);
-    
+
     await newReview.save();
     await listing.save();
 
@@ -124,9 +124,9 @@ app.post("/listings/:id/reviews", validateReview, wrapAsync(async(req,res)=>{
 }));
 
 // Delete Review Route
-app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async(req,res)=>{
-    let {id, reviewId} = req.params;
-    await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
+app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async (req, res) => {
+    let { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
     res.redirect(`/listings/${id}`);
 
@@ -151,7 +151,7 @@ app.all("*splat", (req, res, next) => {
 
 app.use((err, req, res, next) => {
     let { statusCode = 500, message = "Something went wrong!" } = err;
-    res.status(statusCode).render("error.ejs", {message});
+    res.status(statusCode).render("error.ejs", { message });
     //res.status(statusCode).send(message);
 });
 

@@ -50,12 +50,23 @@ async function main() {
     await mongoose.connect(MONGO_URL);
 }
 
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
 app.get("/", (req, res) => {
     res.send("Hi, I am root");
 });
 
-app.use(session(sessionOptions));
-app.use(flash());
 
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
@@ -77,12 +88,6 @@ app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
 app.use("/", userRouter);
 
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 app.all("*splat", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found!"));

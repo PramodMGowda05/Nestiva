@@ -10,12 +10,8 @@ const listingSchema = new Schema({
     },
     description: String,
     image: {
+        url: String,
         filename: String,
-        url: {
-            type: String,
-            default: "https://unsplash.com/photos/brown-and-white-wooden-house-near-swimming-pool-during-daytime-_twiIcIsp2s",
-            set: (v) => v === "" ? "https://unsplash.com/photos/brown-and-white-wooden-house-near-swimming-pool-during-daytime-_twiIcIsp2s" : v,
-        }
 
     },
     price: Number,

@@ -29,6 +29,8 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
+const dbUrl = process.env.ATLASDB_URL;
+
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     crypto: {
@@ -37,7 +39,7 @@ const store = MongoStore.create({
     touchAfter: 24 * 3600,
 });
 
-store.on("error", () => {
+store.on("error", (err) => {
     console.log("Error in MONGO SESSION STORE ", err);
 });
 
@@ -56,7 +58,7 @@ const sessionOptions = {
 
 
 const port = 8080;
-const dbUrl = process.env.ATLASDB_URL;
+
 
 
 main().then(() => {
@@ -109,7 +111,7 @@ app.use("/listings/:id/reviews",reviewRouter);
 app.use("/", userRouter);
 
 
-app.all("*splat", (req, res, next) => {
+app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found!"));
 });
 

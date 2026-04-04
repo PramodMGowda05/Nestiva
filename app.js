@@ -156,18 +156,18 @@ app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
 const dbUrl = process.env.ATLASDB_URL;
-console.log("DB URL:", dbUrl);
 const port = 8080;
 
 // ------------------ START SERVER AFTER DB ------------------
 async function main() {
-    await mongoose.connect(dbUrl);
+    // ✅ Connect once and reuse
+    const conn = await mongoose.connect(dbUrl);
     console.log("connected to DB");
 
-    // ✅ Create session store AFTER DB connection
+    // ✅ Use client (v6 correct way)
     const store = MongoStore.create({
-        mongoUrl: dbUrl,
-        dbName: "test", // ✅ ADD THIS LINE
+        client: conn.connection.getClient(),
+        dbName: "test",
         crypto: {
             secret: process.env.SECRET,
         },
@@ -182,7 +182,7 @@ async function main() {
         store,
         secret: process.env.SECRET,
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false, // ✅ better for production
         cookie: {
             expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
             maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -209,6 +209,10 @@ async function main() {
     });
 
     // ------------------ ROUTES ------------------
+    app.get("/", (req, res) => {
+        res.redirect("/listings");
+    });
+
     app.use("/listings", listingRouter);
     app.use("/listings/:id/reviews", reviewRouter);
     app.use("/", userRouter);

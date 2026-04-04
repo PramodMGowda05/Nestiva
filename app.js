@@ -156,6 +156,7 @@ app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
 const dbUrl = process.env.ATLASDB_URL;
+console.log("DB URL:", dbUrl);
 const port = 8080;
 
 // ------------------ START SERVER AFTER DB ------------------
@@ -165,7 +166,7 @@ async function main() {
 
     // ✅ Create session store AFTER DB connection
     const store = MongoStore.create({
-        client: mongoose.connection.getClient(),
+        mongoUrl: dbUrl,
         crypto: {
             secret: process.env.SECRET,
         },

@@ -167,6 +167,7 @@ async function main() {
     // ✅ Create session store AFTER DB connection
     const store = MongoStore.create({
         mongoUrl: dbUrl,
+        dbName: "test", // ✅ ADD THIS LINE
         crypto: {
             secret: process.env.SECRET,
         },

@@ -32,9 +32,9 @@ app.use(express.static(path.join(__dirname, "/public")));
 const dbUrl = process.env.ATLASDB_URL;
 
 const store = MongoStore.create({
-    mongoUrl: dbUrl,
+    client: mongoose.connection.getClient(),
     crypto: {
-        secret : process.env.SECRET,
+        secret: process.env.SECRET,
     },
     touchAfter: 24 * 3600,
 });
